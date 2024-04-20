@@ -1,7 +1,6 @@
-import useTodo from "../hooks/useTodo";
 
-export default function CreateTodoForm() {
-  const { handleSubmit, value, setValue } = useTodo();
+
+export default function CreateTodoForm({ value, setValue, handleSubmit}) {
   return (
     <div className="flex flex-col items-center mt-20 w-[70%] bg-blue-500 rounded-md pt-20">
       <h3 className="uppercase">Administra aquí tus tareas</h3>

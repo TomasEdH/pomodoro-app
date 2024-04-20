@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useCounterContext } from "./useCounterContext";
 
 export default function useTodo(){
   const [value, setValue] = useState();
   const [todos, setTodos] = useState([]);
 
-  const { showPomodoro } = useCounterContext();
 
   const addTodo = () => {
     const newTodo = {
@@ -55,12 +53,10 @@ export default function useTodo(){
   const handleSubmit = (e) => {
     e.preventDefault();
     addTodo(value);
- 
     setValue("");
   };
 
   return {
-    showPomodoro,
     value,
     setValue,
     todos,
