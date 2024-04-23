@@ -1,8 +1,11 @@
+import { useTodosContext } from "../hooks/useTodosContext";
 
 
-export default function CreateTodoForm({ value, setValue, handleSubmit}) {
+export default function CreateTodoForm() {
+
+  const { handleSubmit, setValue, value } = useTodosContext()
   return (
-    <div className="flex flex-col items-center mt-20 w-[70%] bg-blue-500 rounded-md pt-20">
+    <div>
       <h3 className="uppercase">Administra aquí tus tareas</h3>
 
       <form onSubmit={handleSubmit} className="flex py-10">
