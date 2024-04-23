@@ -1,12 +1,8 @@
-import { useState } from "react";
-
-const CONTADOR_NAMES = {
-  POMODORO: "Pomodoro",
-  SHORT_BREAK: "Short Break",
-};
+import { CONTADOR_NAMES } from "../constants/contadorNames";
+import { useCounterContext } from "./useCounterContext";
 
 export default function useShowCounter() {
-  const [showPomodoro, setShowPomodoro] = useState(false);
+  const { showPomodoro, setShowPomodoro } = useCounterContext();
 
   const cambiarContadorARenderizar = (name) => {
     if (name === CONTADOR_NAMES.POMODORO) {
