@@ -9,103 +9,84 @@ import {
   useCounterContext,
 } from "./components/hooks/useCounterContext";
 import CreateTodoForm from "./components/Todos/CreateTodoForm";
-import { useState } from "react";
+import { useTodosContext } from "./components/hooks/useTodosContext";
+import { TodosProvider } from "./components/hooks/useTodosContext";
+import Footer from "./components/Footer";
+import ShowOptions from "./components/ShowOptions";
 
 function App() {
-  const { showPomodoro } = useCounterContext();
+  const { showPomodoro, showOptions, showTodos } = useCounterContext();
+  const {
+    value,
+    setValue,
+    todos,
+    deleteTodo,
+    editTodo,
+    toggleComplete,
+    editTask,
+    handleSubmit,
+  } = useTodosContext();
 
-  const [value, setValue] = useState();
-  const [todos, setTodos] = useState([]);
-
-  const addTodo = () => {
-    const newTodo = {
-      id: crypto.randomUUID(),
-      text: value,
-      completed: false,
-      isEditing: false,
-    };
-
-    setTodos([...todos, newTodo]);
-  };
-
-  const deleteTodo = (id) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
-  };
-
-  const editTodo = (id) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            isEditing: !todo.isEditing,
-          };
-        }
-        return todo;
-      })
-    );
-  };
-
-  const toggleComplete = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  }
-
-  const editTask = (value, id) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            text: value,
-            isEditing: !todo.isEditing,
-          };
-        }
-        return todo;
-      })
-    );
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addTodo(value);
-    setValue("");
-  };
+  const bgColorClass = showPomodoro ? "bg-black text-white" : "bg-white";
 
   return (
-    <div className="absolute inset-0 -z-10 h-screen w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
+    <div
+      className={`transition-colors duration-500 ${bgColorClass} w-full min-h-screen`}
+    >
       <main>
         <CountersNav />
-        {showPomodoro ? <PomodoroCounter /> : <ShortBreakCounter />}
-        <CreateTodoForm value={value} setValue={setValue} handleSubmit={handleSubmit} />
-        {todos.map((todo, index) => {
-          const classname = todo.completed ? "completed" : "";
-          return todo.isEditing ? (
-            <EditTodoForm key={index} task={todo} editTask={editTask} />
-          ) : (
-            <Todo
-              todo={todo}
-              key={index}
-              classname={classname}
-              handleToggle={toggleComplete}
-              deleteTodo={deleteTodo}
-              editTodo={editTodo}
-            />
-          );
-        })}
+        <div className="flex flex-col w-full justify-center items-center mt-10">
+          {showPomodoro ? <PomodoroCounter /> : <ShortBreakCounter />}
+          <div className="flex items-start justify-center gap-6 w-full">
+            {showOptions && <ShowOptions />}
+            {showTodos && (
+              <div
+                className={`flex flex-col p-12 border h-full min-w-[35%] mt-5 ${
+                  showPomodoro ? "border-white" : "border-black"
+                } rounded-md`}
+              >
+                <CreateTodoForm
+                  value={value}
+                  setValue={setValue}
+                  handleSubmit={handleSubmit}
+                />
+                <ul className="flex flex-col max-w-[80%]">
+                  {todos.map((todo, index) => {
+                    const classname = todo.completed ? "completed" : "";
+                    return todo.isEditing ? (
+                      <EditTodoForm
+                        key={index}
+                        task={todo}
+                        editTask={editTask}
+                      />
+                    ) : (
+                      <Todo
+                        todo={todo}
+                        key={index}
+                        classname={classname}
+                        handleToggle={toggleComplete}
+                        deleteTodo={deleteTodo}
+                        editTodo={editTodo}
+                      />
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
+      <Footer className={bgColorClass} />
     </div>
   );
 }
 
 export default function AppWrapper() {
   return (
-    <CounterProvider>
-      <App />
-    </CounterProvider>
+    <TodosProvider>
+      <CounterProvider>
+        <App />
+      </CounterProvider>
+    </TodosProvider>
   );
 }
