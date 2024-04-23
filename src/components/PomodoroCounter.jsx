@@ -1,76 +1,67 @@
-import useTemporizador from "./hooks/useCountDown";
-import FormatCounter from "./FormatCounter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCounterContext } from "./hooks/useCounterContext";
-import { MdPlayArrow } from "react-icons/md";
-import { MdOutlineReplay } from "react-icons/md";
+import { MdPlayArrow, MdOutlineReplay } from "react-icons/md";
 import ShowOptionsButton from "./ShowOptionsButton";
-import ShowOptions from "./ShowOptions";
+import FormatCounter from "./FormatCounter";
+import Completitions from "./Completitions";
 
 export default function PomodoroCounter() {
   const {
-    sumaContadoresFinalizados,
     setSumaContadoresFinalizados,
-    setShowPomodoro,
-    minutosInicialesPomodoro,
-    showOptions
-  } = useCounterContext();
-
-  const {
-    minutos,
     segundos,
     iniciar,
     alerta,
-    setAlerta,
     handleIniciar,
     handleReiniciar,
-    setIniciar,
-  } = useTemporizador(minutosInicialesPomodoro, 0);
+    handleDetener,
+    setShowPomodoro,
+    minutos,
+  } = useCounterContext();
+
+  const [minutosComponente, setMinutosComponente] = useState(minutos);
 
   useEffect(() => {
     if (iniciar && minutos === 0 && segundos === 0) {
-      setSumaContadoresFinalizados(sumaContadoresFinalizados + 1);
-      setIniciar(false);
-      setAlerta(true);
+      setSumaContadoresFinalizados((prev) => prev + 1);
       setShowPomodoro(false);
+      handleReiniciar();
     }
   }, [
     iniciar,
     minutos,
     segundos,
-    sumaContadoresFinalizados,
     setSumaContadoresFinalizados,
-    setIniciar,
-    setAlerta,
+    handleDetener,
+    setShowPomodoro,
+    handleReiniciar,
   ]);
 
+  useEffect(() => {
+    setMinutosComponente(minutos);
+  }, [minutos]);
+
   return (
-    <div className="flex flex-col items-center justify-center bg-black min-h-[550px] w-[80%]">
+    <div className="flex flex-col items-center justify-center min-h-[550px] w-[80%]">
       <ShowOptionsButton />
       <div>
-        <FormatCounter minutos={minutosInicialesPomodoro} segundos={segundos} />
+        <FormatCounter minutos={minutosComponente} segundos={segundos} />
       </div>
 
       {!iniciar ? (
-        <button onClick={() => handleIniciar(minutosInicialesPomodoro)}>
+        <button onClick={handleIniciar}>
           <MdPlayArrow className="w-10 h-10" />
         </button>
       ) : (
         <div>
-          <button
-            onClick={() => handleReiniciar(minutosInicialesPomodoro, false)}
-          >
+          <button onClick={handleReiniciar}>
             <MdOutlineReplay className="w-10 h-10" />
           </button>
         </div>
       )}
+
       {alerta && <h2>¡Cuidado! El tiempo se acabó</h2>}
 
-      <section className="flex flex-col items-center gap-2 mt-10">
-        <h3>Pomodoros completados: {sumaContadoresFinalizados}</h3>
-        <h3 className="text-xl">¡A SEGUIR TRABAJANDO!</h3>
-      </section>
-      {showOptions && <ShowOptions/>}
+      <Completitions />
     </div>
   );
 }

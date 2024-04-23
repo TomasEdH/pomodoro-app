@@ -1,50 +1,52 @@
 import { useCounterContext } from "./hooks/useCounterContext";
-import useTemporizador  from "./hooks/useCountDown";
 
 export default function ShowOptions() {
+  const { handleReiniciar, showPomodoro } = useCounterContext();
 
-    const { handleReiniciar } = useTemporizador();
+  const {
+    setMinutosInicialesPomodoro,
+    setMinutosInicialesShortBreak,
+    minutosInicialesPomodoro,
+    minutosInicialesShortBreak,
+  } = useCounterContext();
 
-    const {
-      setMinutosInicialesPomodoro,
-      setMinutosInicialesShortBreak,
-      minutosInicialesPomodoro,
-      minutosInicialesShortBreak,
-    } = useCounterContext();
-  
-    const handleChangeTiempo = (e) => {
-      const value = parseInt(e.target.value);
-      if(!isNaN(value) && value >= 0 && value <= 90) {
-        setMinutosInicialesPomodoro(parseInt(e.target.value));
-        handleReiniciar(parseInt(e.target.value), 0);
-      } else {
-        setMinutosInicialesPomodoro(1);
-      }
-    };
-  
-    const handleChangeTiempoShortBreak = (e) => {
-      const value = parseInt(e.target.value);
-      if(!isNaN(value) && value > 0 && value <= 90) {
-        setMinutosInicialesShortBreak(parseInt(e.target.value));
-        handleReiniciar(parseInt(e.target.value), 0);
-      } else {
-        setMinutosInicialesShortBreak(1);
-      }
-    };
+  const handleChangeTiempo = (e) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value >= 0 && value <= 90) {
+      setMinutosInicialesPomodoro(value);
+      handleReiniciar();
+    } else {
+      setMinutosInicialesPomodoro(1);
+    }
+  };
 
-    return(
-        <div>
-            <input
-                type="text"
-                max={90}
-                value={minutosInicialesPomodoro}
-                onChange={handleChangeTiempo}
-            />
-            <input
-                type="text"
-                value={minutosInicialesShortBreak}
-                onChange={handleChangeTiempoShortBreak}
-            />
-        </div>
-    )
+  const handleChangeTiempoShortBreak = (e) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value > 0 && value <= 90) {
+      setMinutosInicialesShortBreak(value);
+      handleReiniciar();
+    } else {
+      setMinutosInicialesShortBreak(1);
+    }
+  };
+
+  return (
+    <form className={`flex flex-col p-12 border ${showPomodoro ? 'border-white' : 'border-black'} max-w-[50%] mt-5 gap-2`}>
+      <h3 className="uppercase mb-8">Personaliza los contadores</h3>
+      <label>Minutos Pomodoro</label>
+      <input
+        className="text-black border-2 border-black rounded-md p-2"
+        type="text"
+        value={minutosInicialesPomodoro}
+        onChange={handleChangeTiempo}
+      />
+      <label>Minutos Break</label>
+      <input
+        className="text-black border-2 border-black rounded-md p-2"
+        type="text"
+        value={minutosInicialesShortBreak}
+        onChange={handleChangeTiempoShortBreak}
+      />
+    </form>
+  );
 }
