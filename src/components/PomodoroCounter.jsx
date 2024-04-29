@@ -11,6 +11,7 @@ export default function PomodoroCounter() {
     segundos,
     iniciar,
     alerta,
+    setAlerta,
     handleIniciar,
     handleReiniciar,
     handleDetener,
@@ -24,6 +25,7 @@ export default function PomodoroCounter() {
     if (iniciar && minutos === 0 && segundos === 0) {
       setSumaContadoresFinalizados((prev) => prev + 1);
       setShowPomodoro(false);
+      setAlerta(true);
       handleReiniciar();
     }
   }, [
@@ -34,6 +36,7 @@ export default function PomodoroCounter() {
     handleDetener,
     setShowPomodoro,
     handleReiniciar,
+    setAlerta,
   ]);
 
   useEffect(() => {
@@ -62,6 +65,7 @@ export default function PomodoroCounter() {
       {alerta && <h2>¡Cuidado! El tiempo se acabó</h2>}
 
       <Completitions />
+  
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import CountersNav from "./components/CountersNav";
+import sound from "./assets/alert.mp3";
 import Todo from "./components/Todos/Todo";
 import "./App.css";
 import EditTodoForm from "./components/Todos/EditTodoForm";
@@ -15,7 +16,7 @@ import Footer from "./components/Footer";
 import ShowOptions from "./components/ShowOptions";
 
 function App() {
-  const { showPomodoro, showOptions, showTodos } = useCounterContext();
+  const { showPomodoro, showOptions, showTodos, alerta } = useCounterContext();
   const {
     value,
     setValue,
@@ -27,7 +28,14 @@ function App() {
     handleSubmit,
   } = useTodosContext();
 
+  console.log("alerta", alerta);
+
   const bgColorClass = showPomodoro ? "bg-black text-white" : "bg-white";
+  const alertAudio = new window.Audio(sound);
+
+  if (alerta) {
+    alertAudio.play();
+  }
 
   return (
     <div
